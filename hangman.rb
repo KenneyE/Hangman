@@ -111,7 +111,7 @@ class ComputerPlayer
   def guess
     begin
       letter = self.dict.sample.split(//).sample
-    end until !guessed_letters.include?(letter) && letter =~ /[a-z]/
+    end until letter =~ /[a-z]/
     guessed_letters << letter
     letter
   end
@@ -127,9 +127,14 @@ class ComputerPlayer
   end
 
   def handle_guess_response(response, letter)
-
-    response.each do |ind|
-      self.dict.select! { |word| word =~ /\A.{#{ind}}[#{letter}]/ }
+    if response.empty?
+      self.dict.reject! { |word| word =~ /\A.+[#{letter}].+/ }
+      p "Wrong resp: #{self.dict.length}"
+    else
+      response.each do |ind|
+        self.dict.select! { |word| word =~ /\A.{#{ind}}[#{letter}]/ }
+        p "Correct resp: #{self.dict.length}"
+      end
     end
   end
 end
